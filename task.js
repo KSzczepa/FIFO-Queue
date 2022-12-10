@@ -9,7 +9,6 @@ class Queue {
 	fifoTail = null;
 	minIndex = 1;
 
-	
 
 	//Pushing element to the queue from Head side. Modifying localforage.
 	async push_head(element) {
@@ -52,8 +51,6 @@ class Queue {
 
 			this.fifoTail = this.name + 'Element-' + index;
 		})
-
-
 	}
 
 	//Modyfying localforage through deleting element from Tail side
@@ -85,19 +82,15 @@ class Queue {
 	}
 
 	//return the first element from tail side
-	tail() {
-		
-		async function fcn (name) {
-			const a = await localforage.getItem(name+'Tail')
-			return a;
-		};
-		fcn(this.name).then((v) => {this.fifoTail = v; console.log('Tail element:', this.fifoTail);});
-		
+	async tail() {
+		const result = await localforage.getItem(this.name+'Tail').then((value) => {return value;});
+		return result;
 	}
 
 	//return the first element from head side
-	head() {
-		localforage.getItem(this.name+'Head').then((value) => {console.log('Head element:', value);});
+	async head() {
+		const result = await localforage.getItem(this.name+'Head').then((value) => {return value;});
+		return result;
 	}
 
 	//generate identifier using by elements
@@ -106,16 +99,22 @@ class Queue {
 		await localforage.getItem(name+'LastIndex').then((receivedValue) => {
 
 			localforage.setItem(name+'LastIndex', receivedValue + 1)
-			.then((valueToSet) => {console.log('LastIndex to be set', valueToSet);})    
-			.catch((error) => {});
+			.catch((error) => {console.log(error)});
 
 		});
 	}
 }
 
+async function main () {
+	const fifo = new Queue("Bob");
+	await fifo.push_head('My value');
+	// await fifo.pop_tail();
+	const headElem = await fifo.head();
+	const tailElem = await fifo.tail();
+	
+	console.log('Head element', headElem);
+	console.log('Tail element', tailElem);
+};
 
-const fifo = new Queue("Bob");
-// fifo.push_head('My value');
-fifo.pop_tail();
-fifo.head();
+main();
 
