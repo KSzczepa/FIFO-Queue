@@ -20,43 +20,35 @@ class Queue {
 
 		await localforage.getItem(this.name+'LastIndex').then((index) => {
 			
-
 			const itemNextKey = elementName + index + '-Next';
 			const itemPrevKey = elementName + index + '-Prev';
 			const itemValueKey = elementName + index + '-Value';
 			
 			//NEXT ELEMENT
 			localforage.setItem(itemNextKey, '')  
-			.catch((error) => {console.log(error);});
 
 			//PREV ELEMENT
 			localforage.setItem(itemPrevKey, (index > this.minIndex) ? elementName + (index - 1) : '')  
-			.catch((error) => {console.log(error);});
 
 			//VALUE OF ELEMENT
 			localforage.setItem(itemValueKey, element)  
-			.catch((error) => {console.log(error);});
 
 			//NEXT ELEMENT VALUE IN PREVIOUS ELEMENT
 			if (index > this.minIndex) {
-				localforage.getItem(this.name+'Tail').then((recVal) => {
-					
+				localforage.getItem(this.name+'Tail').then((recVal) => {					
 					localforage.setItem(recVal + '-Next', elementName + index)  
-					.catch((error) => {console.log(error);});
 				})
 			}
 
 			//HEAD
 			if (index === this.minIndex) {
 				localforage.setItem(this.name+'Head', this.name + 'Element-' + index)
-				.catch((error) => {});
 
 				this.fifoHead = this.name + 'Element-' + index;
 			}
 
 			//TAIL
 			localforage.setItem(this.name+'Tail', this.name + 'Element-' + index)
-			.catch((error) => {});
 
 			this.fifoTail = this.name + 'Element-' + index;
 		})
@@ -65,19 +57,17 @@ class Queue {
 	}
 
 	//Modyfying localforage through deleting element from Tail side
-	pop_tail() {
-		localforage.getItem(this.name + 'Tail').then((value) => {
+	async pop_tail() {
+		await localforage.getItem(this.name + 'Tail').then((value) => {
 			localforage.getItem(this.name + 'LastIndex').then((index) => {
 				if (index > 0) {
-					localforage.getItem(value + '-Prev').then((prevValue) => {
-						if (index > 1) {
+					if (index > 1) {
+						localforage.getItem(value + '-Prev').then((prevValue) => {							
 							localforage.setItem(prevValue + '-Next', '')
-								.catch((error) => {});
+						});
 
-							localforage.setItem(this.name+'Tail', this.name + 'Element-' + (index-1))
-								.catch((error) => {});
-						}
-					});
+						localforage.setItem(this.name+'Tail', this.name + 'Element-' + (index-1))
+					}
 					
 					if (index === 1) {
 						localforage.removeItem(this.name+'Tail');
@@ -89,16 +79,9 @@ class Queue {
 					localforage.removeItem(value+'-Value');
 
 					localforage.setItem(this.name + 'LastIndex', index-1)
-						.catch((error) => {});
-
 				}
-			});
-			
+			});			
 		});
-
-		
-
-		
 	}
 
 	//return the first element from tail side
@@ -127,8 +110,6 @@ class Queue {
 			.catch((error) => {});
 
 		});
-		
-		  
 	}
 }
 
