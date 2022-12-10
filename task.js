@@ -7,6 +7,7 @@ class Queue {
 
 	fifoHead = null;
 	fifoTail = null;
+	minIndex = 1;
 
 	create() {
 		localforage.getItem(this.name).then((value) => {
@@ -23,15 +24,14 @@ class Queue {
 	}
 
 	//Pushing element to the queue from Head side. Modifying localforage.
-	push_head(element) {
+	async push_head(element) {
 
 		const elementName = this.name + 'Element-';
 
-		this.id_generator(this.name);
+		await this.id_generator(this.name);
 
-		localforage.getItem(this.name+'LastIndex').then((index) => {
-			if (index == null) 
-			index = 0;
+		await localforage.getItem(this.name+'LastIndex').then((index) => {
+			
 
 			const itemNextKey = elementName + index + '-Next';
 			const itemPrevKey = elementName + index + '-Prev';
@@ -42,7 +42,7 @@ class Queue {
 			.catch((error) => {console.log(error);});
 
 			//PREV ELEMENT
-			localforage.setItem(itemPrevKey, (index > 0) ? elementName + (index - 1) : '')  
+			localforage.setItem(itemPrevKey, (index > this.minIndex) ? elementName + (index - 1) : '')  
 			.catch((error) => {console.log(error);});
 
 			//VALUE OF ELEMENT
@@ -50,7 +50,7 @@ class Queue {
 			.catch((error) => {console.log(error);});
 
 			//NEXT ELEMENT VALUE IN PREVIOUS ELEMENT
-			if (index > 0) {
+			if (index > this.minIndex) {
 				localforage.getItem(this.name+'Tail').then((recVal) => {
 					
 					localforage.setItem(recVal + '-Next', elementName + index)  
@@ -59,7 +59,7 @@ class Queue {
 			}
 
 			//HEAD
-			if (index === 0) {
+			if (index === this.minIndex) {
 				localforage.setItem(this.name+'Head', this.name + 'Element-' + index)
 				.catch((error) => {});
 
@@ -98,9 +98,9 @@ class Queue {
 	}
 
 	//generate identifier using by elements
-	id_generator(name) {
+	async id_generator(name) {
 
-		localforage.getItem(name+'LastIndex').then((receivedValue) => {
+		await localforage.getItem(name+'LastIndex').then((receivedValue) => {
 
 			localforage.setItem(name+'LastIndex', receivedValue + 1)
 			.then((valueToSet) => {console.log('LastIndex to be set', valueToSet);})    
