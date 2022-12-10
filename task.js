@@ -67,21 +67,31 @@ class Queue {
 	//Modyfying localforage through deleting element from Tail side
 	pop_tail() {
 		localforage.getItem(this.name + 'Tail').then((value) => {
-			localforage.getItem(value + '-Prev').then((prevValue) => {
-				localforage.setItem(prevValue + '-Next', '')
-				.catch((error) => {});
-			});
-			
-			localforage.removeItem(value+'-Next');
-			localforage.removeItem(value+'-Prev');
-			localforage.removeItem(value+'-Value');
+			localforage.getItem(this.name + 'LastIndex').then((index) => {
+				if (index > 0) {
+					localforage.getItem(value + '-Prev').then((prevValue) => {
+						if (index > 1) {
+							localforage.setItem(prevValue + '-Next', '')
+								.catch((error) => {});
 
-			localforage.getItem(this.name + 'LastIndex').then((newValue) => {
-				localforage.setItem(this.name + 'LastIndex', newValue-1)
-				.catch((error) => {});
+							localforage.setItem(this.name+'Tail', this.name + 'Element-' + (index-1))
+								.catch((error) => {});
+						}
+					});
+					
+					if (index === 1) {
+						localforage.removeItem(this.name+'Tail');
+						localforage.removeItem(this.name+'Head');
+					}
 
-				localforage.setItem(this.name+'Tail', this.name + 'Element-' + (newValue-1))
-				.catch((error) => {});
+					localforage.removeItem(value+'-Next');
+					localforage.removeItem(value+'-Prev');
+					localforage.removeItem(value+'-Value');
+
+					localforage.setItem(this.name + 'LastIndex', index-1)
+						.catch((error) => {});
+
+				}
 			});
 			
 		});
@@ -125,6 +135,6 @@ class Queue {
 
 const fifo = new Queue("Bob");
 // fifo.push_head('My value');
-
-fifo.head();
 fifo.pop_tail();
+fifo.head();
+
