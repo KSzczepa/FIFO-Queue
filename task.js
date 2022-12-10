@@ -9,19 +9,7 @@ class Queue {
 	fifoTail = null;
 	minIndex = 1;
 
-	create() {
-		localforage.getItem(this.name).then((value) => {
-			console.log(value)
-		});
-
-		if (typeof(localforage.getItem(this.name)) == 'undefined') {
-			//queue dos not exist
-			localforage.setItem(this.name, 0);
-			return false;
-		}
-		else	
-			return true;
-	}
+	
 
 	//Pushing element to the queue from Head side. Modifying localforage.
 	async push_head(element) {
@@ -78,7 +66,29 @@ class Queue {
 
 	//Modyfying localforage through deleting element from Tail side
 	pop_tail() {
+		localforage.getItem(this.name + 'Tail').then((value) => {
+			localforage.getItem(value + '-Prev').then((prevValue) => {
+				localforage.setItem(prevValue + '-Next', '')
+				.catch((error) => {});
+			});
+			
+			localforage.removeItem(value+'-Next');
+			localforage.removeItem(value+'-Prev');
+			localforage.removeItem(value+'-Value');
 
+			localforage.getItem(this.name + 'LastIndex').then((newValue) => {
+				localforage.setItem(this.name + 'LastIndex', newValue-1)
+				.catch((error) => {});
+
+				localforage.setItem(this.name+'Tail', this.name + 'Element-' + (newValue-1))
+				.catch((error) => {});
+			});
+			
+		});
+
+		
+
+		
 	}
 
 	//return the first element from tail side
@@ -94,7 +104,7 @@ class Queue {
 
 	//return the first element from head side
 	head() {
-		return this.fifoHead;
+		localforage.getItem(this.name+'Head').then((value) => {console.log('Head element:', value);});
 	}
 
 	//generate identifier using by elements
@@ -114,5 +124,7 @@ class Queue {
 
 
 const fifo = new Queue("Bob");
-fifo.push_head('My value');
-fifo.tail();
+// fifo.push_head('My value');
+
+fifo.head();
+fifo.pop_tail();
