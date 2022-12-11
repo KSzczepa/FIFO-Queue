@@ -1,0 +1,23 @@
+{
+  "name": "fifo-queue",
+  "version": "1.0.0",
+  "description": "fifo queue implementation",
+  "main": "FifoQueue.js",
+  "scripts": {
+    "test": "test start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KSzczepa/FIFO-Queue.git"
+  },
+  "author": "KSzczepa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KSzczepa/FIFO-Queue/issues"
+  },
+  "homepage": "https://github.com/KSzczepa/FIFO-Queue#readme",
+  "dependencies": {
+    "localforage": "^1.10.0",
+    "seedrandom": "^3.0.5"
+  }
+}
