@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+	<meta charset="utf-8" />
+	<title>FiFo Queueu</title>
+	<link rel="stylesheet" href="style.css" type="text/css" />
+	<script src="node_modules/localforage/dist/localforage.js"></script>
+	<script src="node_modules/seedrandom/seedrandom.min.js"></script>
+	<script>localforage.config();</script>
+	<script type="text/javascript" src="task.js"></script>
+	<script type="text/javascript" src="random.js"></script>
+	<script type="text/javascript" src="sleep.js"></script>
+	<script type="text/javascript">
+
+		const fifo = new Queue("Bob");
+
+	
+		async function main_task() {
+			for ( let i = 9; i >= 0; i-- ) {
+				const timeOut = 100;//rand(100)*10; //at least 100 ms, max 1s
+				const dataShouldRecv = randSeed(i);
+				sleep(timeOut);
+				const element = await fifo.tail();
+				await fifo.pop_tail();
+				const dataRecv = await localforage.getItem(element+'-Value');	
+
+				if (dataRecv != dataShouldRecv)
+					console.log('error', dataShouldRecv, dataRecv);
+				else
+					console.log('Data are correct');
+				}
+				
+		}
+
+		main_task();
+	</script>
+	
+	
+</head>
+<body>
+	<h1>FiFo Queue</h1>
+	
+</body>
+</html>
