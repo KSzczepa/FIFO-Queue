@@ -1,4 +1,3 @@
-const id=0;
 
 class Queue {
 	constructor(name) {
@@ -107,7 +106,7 @@ class Queue {
 
 async function main () {
 	const fifo = new Queue("Bob");
-	await fifo.push_head('My value');
+	// await fifo.push_head('My value');
 	// await fifo.pop_tail();
 	const headElem = await fifo.head();
 	const tailElem = await fifo.tail();
@@ -116,5 +115,5 @@ async function main () {
 	console.log('Tail element', tailElem);
 };
 
-main();
+// main();
 
