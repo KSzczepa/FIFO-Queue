@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+	<meta charset="utf-8" />
+	<title>FiFo Queueu2</title>
+	<link rel="stylesheet" href="style.css" type="text/css" />
+	<script src="node_modules/localforage/dist/localforage.js"></script>
+	<script src="node_modules/seedrandom/seedrandom.min.js"></script>
+	<script>localforage.config();</script>
+	<script type="text/javascript" src="task.js"></script>
+	<script type="text/javascript" src="random.js"></script>
+	<script type="text/javascript" src="sleep.js"></script>
+	<script type="text/javascript">
+		
+		const fifo = new Queue("Bob");
+
+		//Send 10 elements to the queue
+		async function test() {
+			for ( let i = 0; i < 10; i++ ) {
+				const timeOut = 100; //rand(100)*10; //at least 100 ms, max 1s
+				const data = randSeed(i);
+				sleep(timeOut);
+				await fifo.push_head(data);
+				console.log('Element pushed', randSeed(i));
+				}
+		}
+
+		test();
+	</script>
+	
+	
+</head>
+<body>
+	<h1>FiFo Queue</h1>
+	
+</body>
+</html>
