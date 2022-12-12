@@ -22,8 +22,9 @@
 				sleep(timeOut);
 				const element = await fifo.tail();
 				await fifo.pop_tail();
-				const dataRecv = await localforage.getItem(element+'-Value');	
 
+				const dataRecv = await localforage.getItem(element+'-Value');
+				
 				if (dataRecv != dataShouldRecv)
 					console.log('error', dataShouldRecv, dataRecv);
 				else

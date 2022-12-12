@@ -1,12 +1,14 @@
 
 class Queue {
+	#minIndex = 1;
+
 	constructor(name) {
 		this.name = name;
 	}
 
-	fifoHead = null;
-	fifoTail = null;
-	minIndex = 1;
+	fifoHead = localforage.getItem(this.name+'Head');
+	fifoTail = localforage.getItem(this.name+'Tail');
+	
 
 
 	//Pushing element to the queue from Head side. Modifying localforage.
@@ -26,20 +28,20 @@ class Queue {
 			localforage.setItem(itemNextKey, '')  
 
 			//PREV ELEMENT
-			localforage.setItem(itemPrevKey, (index > this.minIndex) ? elementName + (index - 1) : '')  
+			localforage.setItem(itemPrevKey, (index > this.#minIndex) ? elementName + (index - 1) : '')  
 
 			//VALUE OF ELEMENT
 			localforage.setItem(itemValueKey, element)  
 
 			//NEXT ELEMENT VALUE IN PREVIOUS ELEMENT
-			if (index > this.minIndex) {
+			if (index > this.#minIndex) {
 				localforage.getItem(this.name+'Tail').then((recVal) => {					
 					localforage.setItem(recVal + '-Next', elementName + index)  
 				})
 			}
 
 			//HEAD
-			if (index === this.minIndex) {
+			if (index === this.#minIndex) {
 				localforage.setItem(this.name+'Head', this.name + 'Element-' + index)
 
 				this.fifoHead = this.name + 'Element-' + index;
@@ -106,7 +108,7 @@ class Queue {
 
 //main fcn was used for tests
 // async function main () {
-// 	const fifo = new Queue("Bob");
+	// const fifo = new Queue("Bob");
 // 	// await fifo.push_head('My value');
 // 	// await fifo.pop_tail();
 // 	const headElem = await fifo.head();
