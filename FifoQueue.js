@@ -104,16 +104,17 @@ class Queue {
 	}
 }
 
-async function main () {
-	const fifo = new Queue("Bob");
-	// await fifo.push_head('My value');
-	// await fifo.pop_tail();
-	const headElem = await fifo.head();
-	const tailElem = await fifo.tail();
+//main fcn was used for tests
+// async function main () {
+// 	const fifo = new Queue("Bob");
+// 	// await fifo.push_head('My value');
+// 	// await fifo.pop_tail();
+// 	const headElem = await fifo.head();
+// 	const tailElem = await fifo.tail();
 	
-	console.log('Head element', headElem);
-	console.log('Tail element', tailElem);
-};
+// 	console.log('Head element', headElem);
+// 	console.log('Tail element', tailElem);
+// };
 
 // main();
 
